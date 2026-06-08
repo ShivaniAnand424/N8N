@@ -1,0 +1,416 @@
+{
+  "name": "Project 1 email",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Text Form",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "First Name "
+            },
+            {
+              "fieldLabel": "Last Name"
+            },
+            {
+              "fieldLabel": "Email"
+            },
+            {
+              "fieldLabel": "Budget",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "100-1000"
+                  },
+                  {
+                    "option": "1000+"
+                  },
+                  {
+                    "option": "0-100"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "Message"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.5,
+      "position": [
+        -1088,
+        0
+      ],
+      "id": "2a0f8678-c751-4b6b-a1f3-4ac5866645c3",
+      "name": "On form submission",
+      "webhookId": "b09635f8-2b0d-4ac0-8f14-03a562ad975b"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1iuE3srLpJxZRa7PKCRnu41_4KDO74nR9dwpFLUddFs4",
+          "mode": "list",
+          "cachedResultName": "n8n lead vs2",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1iuE3srLpJxZRa7PKCRnu41_4KDO74nR9dwpFLUddFs4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1iuE3srLpJxZRa7PKCRnu41_4KDO74nR9dwpFLUddFs4/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "First Name": "={{ $json['First Name '] }}",
+            "Last Name": "={{ $json['Last Name'] }}",
+            "Email ": "={{ $json.Email }}",
+            "Budget": "={{ $json.Budget }}",
+            "Message": "={{ $json.Message }}",
+            "Date ": "={{ $today }}",
+            "Rejected": "={{ $json.Budget === \"1000+\" ? \"FALSE\" : \"TRUE\" }}"
+          },
+          "matchingColumns": [
+            "Email "
+          ],
+          "schema": [
+            {
+              "id": "First Name",
+              "displayName": "First Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Last Name",
+              "displayName": "Last Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email ",
+              "displayName": "Email ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Budget",
+              "displayName": "Budget",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Message",
+              "displayName": "Message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date ",
+              "displayName": "Date ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Rejected",
+              "displayName": "Rejected",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -880,
+        0
+      ],
+      "id": "361decb2-9564-41fd-acad-f2a497b258d4",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "BKJH6XbXcNd3Y3gk",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Append or update row in sheet').item.json.Budget }}",
+                    "rightValue": "100-1000",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "2070fd44-455d-4b63-aa64-5ffaf3a7a55e"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "f7b04d45-ba23-42f1-8abe-11ad23927ef3",
+                    "leftValue": "={{ $('Append or update row in sheet').item.json.Budget }}",
+                    "rightValue": "1000+",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -672,
+        0
+      ],
+      "id": "9710f710-5b83-4203-a94b-63078e46d420",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Append or update row in sheet').item.json['Email '] }}",
+        "subject": "Details",
+        "message": "=Hey  {{ $('Append or update row in sheet').item.json['First Name'] }} ,\nBe ready for the interview online \nThank You\nshivani",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -432,
+        -64
+      ],
+      "id": "bcfec4ff-effa-4a95-9402-a2f2f31790df",
+      "name": "Send a message",
+      "webhookId": "e91c1d87-f656-485d-bbe4-91ec7a56964e",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "luLFS4IZiN8XvBx6",
+          "name": "Gmail OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Append or update row in sheet').item.json['Email '] }}",
+        "subject": "Details",
+        "message": "=Hey  {{ $('Append or update row in sheet').item.json['First Name'] }} ,\nYou have to come for the interveiw offline at the company .\nThank You\nshivani",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -432,
+        96
+      ],
+      "id": "7d393dc1-5b13-4cc8-9c95-85d77fa7cce8",
+      "name": "Send a message1",
+      "webhookId": "e91c1d87-f656-485d-bbe4-91ec7a56964e",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "luLFS4IZiN8XvBx6",
+          "name": "Gmail OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -176,
+        0
+      ],
+      "id": "c1838005-ac91-433b-99af-b5037df62b73",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "sendTo": "shivanianand424@gmail.com",
+        "subject": "Info",
+        "emailType": "text",
+        "message": "=Lead: \nName : {{ $('Append or update row in sheet').item.json['First Name'] }} {{ $('Append or update row in sheet').item.json['Last Name'] }}\nEmail : {{ $('Append or update row in sheet').item.json['Email '] }}\nMessage : {{ $('Append or update row in sheet').item.json.Message }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        16,
+        0
+      ],
+      "id": "ab3eb8fa-b9a4-4a87-ac4b-de62c9ad78a0",
+      "name": "Send a message2",
+      "webhookId": "ed3dd1cd-75ae-485f-972d-73b4003c6b08",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "luLFS4IZiN8XvBx6",
+          "name": "Gmail OAuth2 API"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append or update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Send a message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "staticData": null,
+  "pinData": {
+    "On form submission": [
+      {
+        "json": {
+          "First Name ": "Khushi",
+          "Last Name": "Hasija",
+          "Email": "khusihasija08@gmail.com",
+          "Budget": "1000+",
+          "Message": "Hello",
+          "submittedAt": "2026-06-04T18:22:47.097+05:30",
+          "formMode": "test"
+        }
+      }
+    ]
+  },
+  "triggerCount": 0,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  }
+}

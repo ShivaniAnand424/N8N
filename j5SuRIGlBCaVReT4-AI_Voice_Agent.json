@@ -1,0 +1,866 @@
+{
+  "name": "AI Voice Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nreturn items.map(item => {\n\n  let standardizedNumber;\n\n  const phone = String(item.json[\"Phone no.\"]);\n\n  // Example validation\n  if (phone.length !== 10) {\n    standardizedNumber = \"incorrect format\";\n  } else {\n    standardizedNumber = \"+91\" + phone;\n  }\n\n  // Return updated item\n  return {\n    json: {\n      ...item.json,\n      \"Phone Number\": standardizedNumber\n    }\n  };\n\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -928,
+        -112
+      ],
+      "id": "86ff3665-a675-4d52-b79c-a597423926e4",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "a44b1bbe-c8cb-4dcb-a2b5-d99184be7d79",
+              "leftValue": "={{$json[\"Phone no.\"].toString()}}",
+              "rightValue": "incorrect format",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -752,
+        -112
+      ],
+      "id": "ed0ee6dd-5782-481e-bb57-f94e5f5b1ee5",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1dAv69_2oM9w4krDyhqO_YqaW4waNelpYqKvnZbnCWiM",
+          "mode": "list",
+          "cachedResultName": "Incorrect phone",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1dAv69_2oM9w4krDyhqO_YqaW4waNelpYqKvnZbnCWiM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1dAv69_2oM9w4krDyhqO_YqaW4waNelpYqKvnZbnCWiM/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [
+            "Incorrect phone"
+          ],
+          "schema": [
+            {
+              "id": "Incorrect phone",
+              "displayName": "Incorrect phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -496,
+        -288
+      ],
+      "id": "1be89e70-f51f-4f2d-ae6b-1186b5e93f01",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "BKJH6XbXcNd3Y3gk",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "2009d8ca-7e63-432b-a2e5-becd7c80e154",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -1136,
+        -112
+      ],
+      "id": "3de8772a-d74f-4903-a314-c85747d1f336",
+      "name": "Webhook",
+      "webhookId": "2009d8ca-7e63-432b-a2e5-becd7c80e154"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.retellai.com/v2/create-web-call",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer key_bbebd29c2420b372903c4b99ea50"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"agent_id\": \"agent_98475816e0350120041f800ecb\",\n  \"metadata\": {\n    \"candidate_name\": \"{{ $('Webhook').item.json.body.data.fields[0].value }}\",\n    \"applied_role\": \"{{ $('Webhook').item.json.body.data.fields[4].value }}\"\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -496,
+        0
+      ],
+      "id": "48f3ce2c-f15e-4d79-869f-8602ae1d226e",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "amount": 60
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -336,
+        -128
+      ],
+      "id": "a7d1d873-76f9-44cf-9b97-a4422df11fbb",
+      "name": "Wait",
+      "webhookId": "68ac1d53-d1cc-4aa1-923c-816be28e8e8c",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        0,
+        -400
+      ],
+      "id": "4462eefe-6bdd-40f0-8ede-6ae919c11dbf",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        96,
+        -128
+      ],
+      "id": "d6a0ad7e-a016-4a0a-bd0d-4186871b9a3c",
+      "name": "Limit"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "a44b1bbe-c8cb-4dcb-a2b5-d99184be7d79",
+              "leftValue": "={{$json[\"Phone no.\"].toString()}}",
+              "rightValue": "incorrect format",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        288,
+        -128
+      ],
+      "id": "713a7716-d3d5-4a05-adc0-9525c8fe31df",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "a44b1bbe-c8cb-4dcb-a2b5-d99184be7d79",
+              "leftValue": "={{$json[\"Phone no.\"].toString()}}",
+              "rightValue": "incorrect format",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        544,
+        -208
+      ],
+      "id": "3beb1b51-82ac-46b2-973c-ad6bf9c8fd6b",
+      "name": "If2"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        496,
+        -32
+      ],
+      "id": "43ffe603-3a8e-44ac-96a1-fc23a48d83ce",
+      "name": "Wait1",
+      "webhookId": "ba8c782b-ff43-4e9d-b423-dd54436ba55b"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1Cj9bKHl0MZCFfUmBeTuZb3L7A7vk5xA9HnFwEZxT-9o",
+          "mode": "list",
+          "cachedResultName": "AI_CALL",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Cj9bKHl0MZCFfUmBeTuZb3L7A7vk5xA9HnFwEZxT-9o/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Cj9bKHl0MZCFfUmBeTuZb3L7A7vk5xA9HnFwEZxT-9o/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Comapany ",
+              "displayName": "Comapany ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Role ",
+              "displayName": "Role ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Request",
+              "displayName": "Request",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Company SIze",
+              "displayName": "Company SIze",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Service Interest",
+              "displayName": "Service Interest",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Motivation",
+              "displayName": "Motivation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Urgency",
+              "displayName": "Urgency",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "PAst Experience",
+              "displayName": "PAst Experience",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Budget",
+              "displayName": "Budget",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Interest?",
+              "displayName": "Interest?",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        752,
+        -304
+      ],
+      "id": "842ce043-d669-43ad-b359-13680eb8bf2c",
+      "name": "Append row in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "BKJH6XbXcNd3Y3gk",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1Cj9bKHl0MZCFfUmBeTuZb3L7A7vk5xA9HnFwEZxT-9o",
+          "mode": "list",
+          "cachedResultName": "AI_CALL",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Cj9bKHl0MZCFfUmBeTuZb3L7A7vk5xA9HnFwEZxT-9o/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Cj9bKHl0MZCFfUmBeTuZb3L7A7vk5xA9HnFwEZxT-9o/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Comapany ",
+              "displayName": "Comapany ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Role ",
+              "displayName": "Role ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Request",
+              "displayName": "Request",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Company SIze",
+              "displayName": "Company SIze",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Service Interest",
+              "displayName": "Service Interest",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Motivation",
+              "displayName": "Motivation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Urgency",
+              "displayName": "Urgency",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "PAst Experience",
+              "displayName": "PAst Experience",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Budget",
+              "displayName": "Budget",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Interest?",
+              "displayName": "Interest?",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        752,
+        -112
+      ],
+      "id": "9c56d4db-170d-4f44-92a6-6cfe35c8b8ca",
+      "name": "Append row in sheet2",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "BKJH6XbXcNd3Y3gk",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        []
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Append row in sheet2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "staticData": null,
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "shivani-anand-424.app.n8n.cloud",
+            "user-agent": "Tally Webhooks",
+            "content-length": "1721",
+            "accept": "application/json, text/plain, */*",
+            "accept-encoding": "gzip, br",
+            "baggage": "sentry-environment=production,sentry-release=4def36052bbefcb0b12625480ba194d63c8ef29b,sentry-public_key=6af4b6673f1648edaa8fef3f2ca43405,sentry-trace_id=143ac29b07b07db88668132b43ea7584,sentry-org_id=407628,sentry-sampled=false,sentry-sample_rand=0.3847682061644888,sentry-sample_rate=0",
+            "cdn-loop": "cloudflare; loops=1; subreqs=1",
+            "cf-connecting-ip": "34.96.41.249",
+            "cf-ew-via": "15",
+            "cf-ipcountry": "BE",
+            "cf-ray": "a066f299cee8ccf4-LHR",
+            "cf-visitor": "{\"scheme\":\"https\"}",
+            "cf-worker": "n8n.cloud",
+            "content-type": "application/json",
+            "sentry-trace": "143ac29b07b07db88668132b43ea7584-344a9f88ce5c4c79-0",
+            "x-forwarded-for": "34.96.41.249, 172.68.229.75",
+            "x-forwarded-host": "shivani-anand-424.app.n8n.cloud",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-forwarded-server": "traefik-prod-users-gwc-112-7ff556c8c8-4jbkz",
+            "x-is-trusted": "yes",
+            "x-real-ip": "34.96.41.249"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "eventId": "2ad8813a-efae-4d6e-b807-a5d14b71bc0b",
+            "eventType": "FORM_RESPONSE",
+            "createdAt": "2026-06-04T12:30:13.982Z",
+            "data": {
+              "responseId": "o9BRMN5",
+              "submissionId": "o9BRMN5",
+              "respondentId": "A74oDWk",
+              "formId": "ODk4g7",
+              "formName": "Light House Interview Application ",
+              "createdAt": "2026-06-04T12:30:13.000Z",
+              "submissionPdfUrl": "https://api.tally.so/forms/ODk4g7/submissions/o9BRMN5/pdf?accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWJtaXNzaW9uSWQiOiJvOUJSTU41IiwiZm9ybUlkIjoiT0RrNGc3IiwiaWF0IjoxNzgwNTc2MjEzfQ.mqn1UqIfLGaEShLHme_NtKEwmoaQjYDsDbdb6wqzuu4&signature=52339fc42a494ea8569cd5e8fd7a39473fea0375351901dde7a58f10636eb571",
+              "submissionPreviewUrl": "https://tally.so/forms/ODk4g7/submissions/o9BRMN5/preview?accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWJtaXNzaW9uSWQiOiJvOUJSTU41IiwiZm9ybUlkIjoiT0RrNGc3IiwiaWF0IjoxNzgwNTc2MjEzfQ.mqn1UqIfLGaEShLHme_NtKEwmoaQjYDsDbdb6wqzuu4&signature=52339fc42a494ea8569cd5e8fd7a39473fea0375351901dde7a58f10636eb571",
+              "fields": [
+                {
+                  "key": "question_4jYPBk",
+                  "label": "First Name",
+                  "type": "INPUT_TEXT",
+                  "value": "Ruchi "
+                },
+                {
+                  "key": "question_jxrGbx",
+                  "label": "Last Name",
+                  "type": "INPUT_TEXT",
+                  "value": "Anand"
+                },
+                {
+                  "key": "question_2rYOBL",
+                  "label": "Email",
+                  "type": "INPUT_EMAIL",
+                  "value": "ruchianand7682@gmail.com"
+                },
+                {
+                  "key": "question_xZ79jy",
+                  "label": "Phone",
+                  "type": "INPUT_PHONE_NUMBER",
+                  "value": "+917798753940"
+                },
+                {
+                  "key": "question_ZJAPoz",
+                  "label": "Role",
+                  "type": "INPUT_TEXT",
+                  "value": "Data Science"
+                },
+                {
+                  "key": "question_N0x8DB",
+                  "label": "Experience",
+                  "type": "DROPDOWN",
+                  "value": [
+                    "71ec8534-7c84-4008-9c6a-f8e5902f6d6f"
+                  ],
+                  "options": [
+                    {
+                      "id": "2737b269-a6df-4b56-a656-55e43abdf862",
+                      "text": "0"
+                    },
+                    {
+                      "id": "c288b8c0-be95-412e-b809-09089cddb7cb",
+                      "text": "1-2"
+                    },
+                    {
+                      "id": "71ec8534-7c84-4008-9c6a-f8e5902f6d6f",
+                      "text": "5+"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "webhookUrl": "https://shivani-anand-424.app.n8n.cloud/webhook-test/2009d8ca-7e63-432b-a2e5-becd7c80e154",
+          "executionMode": "test"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "triggerCount": 0,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  }
+}
